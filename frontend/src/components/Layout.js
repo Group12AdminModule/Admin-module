@@ -8,7 +8,7 @@ export default function Layout({ onLogout }) {
   const handleLogout = () => { onLogout(); navigate('/login'); };
 
   const navItems = [
-    { path:'/dashboard', icon:'📊', label:'Dashboard' },
+    { path:'/dashboard', icon:'📊', label:'Dashboard ' },
     { path:'/users', icon:'👥', label:'User Management' },
     { path:'/roles', icon:'🔑', label:'Role Management' },
     { path:'/audit-logs', icon:'📋', label:'Audit Logs' },
