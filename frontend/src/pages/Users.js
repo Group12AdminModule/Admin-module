@@ -13,17 +13,48 @@ const Users = () => {
   const [showModal, setShowModal] = useState(false);
   const [search, setSearch] = useState('');
   const [form, setForm] = useState({ name: '', email: '', role: 'Admin', status: 'Active' });
+  const [errors, setErrors] = useState({});
 
   const filtered = users.filter(u =>
     u.name.toLowerCase().includes(search.toLowerCase()) ||
     u.email.toLowerCase().includes(search.toLowerCase())
   );
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    if (!form.name.trim()) newErrors.name = 'Name is required';
+    if (!form.email.trim()) newErrors.email = 'Email is required';
+    else if (!validateEmail(form.email)) newErrors.email = 'Invalid email format';
+    return newErrors;
+  };
+
   const handleAdd = () => {
-    if (!form.name || !form.email) return;
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
     const newUser = { ...form, id: Date.now(), created: new Date().toISOString().split('T')[0] };
     setUsers([...users, newUser]);
     setForm({ name: '', email: '', role: 'Admin', status: 'Active' });
+    setErrors({});
+    setShowModal(false);
+  };
+
+  const handleOpenModal = () => {
+    setForm({ name: '', email: '', role: 'Admin', status: 'Active' });
+    setErrors({});
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setForm({ name: '', email: '', role: 'Admin', status: 'Active' });
+    setErrors({});
     setShowModal(false);
   };
 
@@ -45,7 +76,7 @@ const Users = () => {
           <h1 style={{ color: '#0f172a', fontSize: '28px', fontWeight: '700', margin: '0 0 6px' }}>User Management 👥</h1>
           <p style={{ color: '#64748b', fontSize: '15px', margin: 0 }}>Manage all system users and their access</p>
         </div>
-        <button onClick={() => setShowModal(true)} style={{
+        <button onClick={handleOpenModal} style={{
           padding: '12px 24px', background: 'linear-gradient(135deg, #3b82f6, #06b6d4)',
           border: 'none', borderRadius: '12px', color: '#fff',
           fontWeight: '600', fontSize: '14px', cursor: 'pointer',
@@ -156,9 +187,12 @@ const Users = () => {
                   value={form[field.key]} onChange={(e) => setForm({ ...form, [field.key]: e.target.value })}
                   style={{
                     width: '100%', padding: '12px 14px', borderRadius: '10px',
-                    border: '1px solid #e2e8f0', fontSize: '14px', outline: 'none', boxSizing: 'border-box',
+                    border: errors[field.key] ? '1px solid #ef4444' : '1px solid #e2e8f0', fontSize: '14px', outline: 'none', boxSizing: 'border-box',
                   }}
                 />
+                {errors[field.key] && (
+                  <p style={{ color: '#ef4444', fontSize: '12px', marginTop: '4px', margin: '4px 0 0 0' }}>{errors[field.key]}</p>
+                )}
               </div>
             ))}
 
@@ -173,7 +207,7 @@ const Users = () => {
             </div>
 
             <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
-              <button onClick={() => setShowModal(false)} style={{
+              <button onClick={handleCloseModal} style={{
                 flex: 1, padding: '13px', borderRadius: '12px',
                 border: '1px solid #e2e8f0', background: '#fff',
                 color: '#475569', fontWeight: '600', cursor: 'pointer', fontSize: '14px',
