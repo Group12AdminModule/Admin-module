@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"log"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
@@ -29,13 +30,15 @@ func AuditLogger(db *gorm.DB) fiber.Handler {
 			}
 		}
 
-		log := models.AuditLog{
+		entry := models.AuditLog{
 			UserID:   userID,
 			Action:   method,
 			Endpoint: c.OriginalURL(),
 			Status:   c.Response().StatusCode(),
 		}
-		_ = db.Create(&log).Error
+		if createErr := db.Create(&entry).Error; createErr != nil {
+			log.Printf("audit log create failed: %v", createErr)
+		}
 		return err
 	}
 }

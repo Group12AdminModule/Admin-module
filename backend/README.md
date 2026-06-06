@@ -12,7 +12,7 @@ go run ./cmd/server
 
 ## Database Schema
 
-Run `/tmp/workspace/Group12AdminModule/Admin-module/backend/db/schema.sql` in PostgreSQL, or let GORM auto-migrate on startup.
+Run `backend/db/schema.sql` in PostgreSQL, or let GORM auto-migrate on startup.
 
 ## API Endpoints
 

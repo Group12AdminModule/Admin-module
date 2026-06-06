@@ -56,7 +56,7 @@ func (h *AuthHandler) Login(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusInternalServerError, "failed generating refresh token")
 	}
 
-	// Frontend integration: access token can be stored in memory, refresh token is an HttpOnly cookie.
+	// Frontend integration: access token can be stored in memory, refresh token is an HTTPOnly cookie.
 	c.Cookie(&fiber.Cookie{
 		Name:     "refresh_token",
 		Value:    refreshToken,

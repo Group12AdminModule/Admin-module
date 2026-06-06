@@ -8,5 +8,5 @@ type AuditLog struct {
 	Action    string    `json:"action" gorm:"size:20;not null"`
 	Endpoint  string    `json:"endpoint" gorm:"size:255;not null"`
 	Status    int       `json:"status" gorm:"not null"`
-	CreatedAt time.Time `json:"timestamp" gorm:"autoCreateTime"`
+	CreatedAt time.Time `json:"created_at" gorm:"autoCreateTime"`
 }

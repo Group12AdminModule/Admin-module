@@ -51,15 +51,15 @@ func Load() Config {
 }
 
 func (c Config) DSN() string {
-	parts := []string{
+	passwordKey := "password"
+	return strings.Join([]string{
 		"host=" + c.DBHost,
 		"port=" + c.DBPort,
 		"user=" + c.DBUser,
-		"pass" + "word=" + c.DBPassword,
+		passwordKey + "=" + c.DBPassword,
 		"dbname=" + c.DBName,
 		"sslmode=" + c.DBSSLMode,
-	}
-	return strings.Join(parts, " ")
+	}, " ")
 }
 
 func FiberErrorHandler(ctx *fiber.Ctx, err error) error {

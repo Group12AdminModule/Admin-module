@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"fmt"
+	"log"
 	"net/mail"
 	"strings"
 
@@ -77,7 +77,8 @@ func (h *UserHandler) Create(c *fiber.Ctx) error {
 	if err := c.BodyParser(&req); err != nil {
 		return fiber.NewError(fiber.StatusBadRequest, "invalid request payload")
 	}
-	if strings.TrimSpace(req.Username) == "" || len(req.Password) < 6 {
+	username := strings.TrimSpace(req.Username)
+	if len(username) < 3 || len(req.Password) < 6 {
 		return fiber.NewError(fiber.StatusBadRequest, "validation failed")
 	}
 	if _, err := mail.ParseAddress(req.Email); err != nil {
@@ -104,7 +105,8 @@ func (h *UserHandler) Create(c *fiber.Ctx) error {
 		return nil
 	})
 	if err != nil {
-		return fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("failed creating user: %v", err))
+		log.Printf("failed creating user: %v", err)
+		return fiber.NewError(fiber.StatusBadRequest, "failed creating user")
 	}
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "user created"})
 }
@@ -166,7 +168,8 @@ func (h *UserHandler) Update(c *fiber.Ctx) error {
 		if err == gorm.ErrRecordNotFound {
 			return fiber.NewError(fiber.StatusNotFound, "user not found")
 		}
-		return fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("failed updating user: %v", err))
+		log.Printf("failed updating user: %v", err)
+		return fiber.NewError(fiber.StatusBadRequest, "failed updating user")
 	}
 	return c.JSON(fiber.Map{"message": "user updated"})
 }
@@ -190,7 +193,8 @@ func (h *UserHandler) Delete(c *fiber.Ctx) error {
 		if err == gorm.ErrRecordNotFound {
 			return fiber.NewError(fiber.StatusNotFound, "user not found")
 		}
-		return fiber.NewError(fiber.StatusBadRequest, fmt.Sprintf("failed deleting user: %v", err))
+		log.Printf("failed deleting user: %v", err)
+		return fiber.NewError(fiber.StatusBadRequest, "failed deleting user")
 	}
 	return c.SendStatus(fiber.StatusNoContent)
 }
